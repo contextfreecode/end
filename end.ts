@@ -1,5 +1,5 @@
 function main() {
-  let places = [
+  const places = [
     {
       name: "Nuevo Progreso",
       population: 2_704,
@@ -14,17 +14,18 @@ function main() {
     },
   ];
 
-  let categorizedPlaces = places.map((place) => ({
-    name: place.name,
-    category: (() => {
-      let population = place.population;
-      if (population < 5_000) return "village";
-      if (population < 100_000) return "town";
-      return "city";
-    })(),
-  }));
-
-  console.log(categorizedPlaces);
+  places.forEach((place) => {
+    const population = place.population;
+    let category: string;
+    if (population < 5_000) {
+      category = "village";
+    } else if (population < 100_000) {
+      category = "town";
+    } else {
+      category = "city";
+    }
+    console.log(`${place.name}: ${category}`);
+  });
 }
 
 main();
