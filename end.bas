@@ -12,7 +12,9 @@ Sub Main
     places(2).name = "Xela"
     places(2).population = 180706
 
-    Print places(2).name
+    For index As Integer = LBound(places) To UBound(places)
+        Print places(index).name
+    Next index
 End Sub
 
 Main
