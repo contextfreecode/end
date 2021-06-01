@@ -1,31 +1,41 @@
-function main() {
-  const places = [
-    {
-      name: "Nuevo Progreso",
-      population: 2_704,
-    },
-    {
-      name: "San Marcos",
-      population: 47_063,
-    },
-    {
-      name: "Xela",
-      population: 180_706,
-    },
-  ];
+import {readLines} from "https://deno.land/std/io/bufio.ts";
 
-  places.forEach((place) => {
-    const population = place.population;
-    let category: string;
-    if (population < 5_000) {
-      category = "village";
-    } else if (population < 100_000) {
-      category = "town";
-    } else {
-      category = "city";
+interface Region {
+  name: string;
+  population: number;
+  southEdge: number;
+}
+
+async function tally(file: Deno.File, regions: Region[]) {
+  // Tally.
+  for await (const line of readLines(file)) {
+    const fields = line.split("\t");
+    const latitude = Number(fields[4]);
+    const population = Number(fields[14]);
+    regions: for (const region of regions) {
+      if (latitude >= region.southEdge) {
+        region.population += population;
+        break regions;
+      }
     }
-    console.log(`${place.name}: ${category}`);
-  });
+  }
+  // Report.
+  for (const region of regions) {
+    console.log(`${region.name}: ${region.population}`);
+  }
+}
+
+async function main() {
+  const file = await Deno.open(Deno.args[0]);
+  try {
+    const regions = [
+      {name: "North", population: 0, southEdge: 0},
+      {name: "South", population: 0, southEdge: -90},
+    ] as Region[];
+    await tally(file, regions);
+  } finally {
+    file.close();
+  }
 }
 
 main();
