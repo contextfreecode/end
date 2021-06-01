@@ -1,4 +1,4 @@
-import {readLines} from "https://deno.land/std@0.97.0/io/bufio.ts";
+import { readLines } from "https://deno.land/std@0.97.0/io/bufio.ts";
 
 interface Region {
   name: string;
@@ -12,7 +12,8 @@ async function tally(file: Deno.File, regions: Region[]) {
     const fields = line.split("\t");
     const latitude = Number(fields[4]);
     const population = Number(fields[14]);
-    regions: for (const region of regions) {
+    regions:
+    for (const region of regions) {
       if (latitude >= region.southEdge) {
         region.population += population;
         break regions;
@@ -30,8 +31,8 @@ async function main() {
   const file = await Deno.open(Deno.args[0]);
   try {
     const regions = [
-      {name: "North", population: 0, southEdge: 0},
-      {name: "South", population: 0, southEdge: -90},
+      { name: "North", population: 0, southEdge: 0 },
+      { name: "South", population: 0, southEdge: -90 },
     ] as Region[];
     await tally(file, regions);
   } finally {
@@ -45,7 +46,7 @@ declare global {
       [elemName: string]: unknown;
     }
   }
-  let React: unknown;
+  const React: unknown;
 }
 
 main();
