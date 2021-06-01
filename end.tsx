@@ -1,4 +1,4 @@
-import {readLines} from "https://deno.land/std/io/bufio.ts";
+import {readLines} from "https://deno.land/std@0.97.0/io/bufio.ts";
 
 interface Region {
   name: string;
@@ -22,6 +22,7 @@ async function tally(file: Deno.File, regions: Region[]) {
   // Report.
   for (const region of regions) {
     console.log(`${region.name}: ${region.population}`);
+    // <div>hi</div>;
   }
 }
 
@@ -36,6 +37,15 @@ async function main() {
   } finally {
     file.close();
   }
+}
+
+declare global {
+  namespace JSX {
+    interface IntrinsicElements {
+      [elemName: string]: unknown;
+    }
+  }
+  let React: unknown;
 }
 
 main();
