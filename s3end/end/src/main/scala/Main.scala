@@ -2,23 +2,29 @@ import scala.util.control.Breaks._
 
 class Region(
   val name: String,
-  population: Long,
+  var population: Long,
   val southEdge: Double,
 )
 
-def tally(file: scala.io.Source) =
-  breakable {
-    for (line <- file.getLines)
-      val fields = line.split('\t')
-      println(fields.length)
-      break
-  }
+def tally(file: scala.io.Source, regions: Iterable[Region]) =
+  for (line <- file.getLines)
+    val fields = line.split('\t')
+    val latitude = fields(4).toDouble
+    val population = fields(14).toLong
+    breakable {
+      for (region <- regions)
+        if latitude >= region.southEdge then
+          region.population += population
+          break
+    }
 
 @main def hello(name: String): Unit =
+  val regions = List(
+    Region(name = "North", population = 0, southEdge = 0),
+    Region(name = "South", population = 0, southEdge = -90),
+  )
   scala.util.Using(scala.io.Source.fromFile(name)) { file =>
-    val regions = List(
-      Region(name = "North", population = 0, southEdge = 0),
-      Region(name = "South", population = 0, southEdge = -90),
-    )
-    tally(file)
+    tally(file, regions)
   }
+  for (region <- regions)
+    println(s"${region.name}: ${region.population}")
