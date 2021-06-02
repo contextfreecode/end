@@ -7,7 +7,6 @@ interface Region {
 }
 
 async function tally(file: Deno.File, regions: Region[]) {
-  // Tally.
   for await (const line of readLines(file)) {
     const fields = line.split("\t");
     const latitude = Number(fields[4]);
@@ -20,25 +19,27 @@ async function tally(file: Deno.File, regions: Region[]) {
       }
     }
   }
-  // Report.
-  for (const region of regions) {
-    console.log(`${region.name}: ${region.population}`);
-    // <div><span>hi</span></div>;
-  }
 }
 
 async function main() {
+  const regions: Region[] = [
+    { name: "North", population: 0, southEdge: 0 },
+    { name: "South", population: 0, southEdge: -90 },
+  ];
+  // Tally.
   const file = await Deno.open(Deno.args[0]);
   try {
-    const regions = [
-      { name: "North", population: 0, southEdge: 0 },
-      { name: "South", population: 0, southEdge: -90 },
-    ] as Region[];
     await tally(file, regions);
   } finally {
     file.close();
   }
+  // Report.
+  for (const region of regions) {
+    console.log(`${region.name}: ${region.population}`);
+  }
 }
+
+// <div><span>hi</span></div>;
 
 declare global {
   namespace JSX {

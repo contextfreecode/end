@@ -1,37 +1,3 @@
-Declare Sub Split( _
-    result() As String, _
-    ByRef text As Const String, _
-    ByRef cut As Const String _
-)
-
-Type Region
-    name as String
-    population as LongInt
-    southEdge as Double
-End Type
-
-Sub Tally(fileNum as Long, regions() As Region)
-    ' Tally.
-    Dim text As String
-    Do Until Eof(fileNum)
-        Line Input #fileNum, text
-        Dim fields() As String
-        Split(fields(), text, !"\t")
-        Var latitude = Val(fields(4))
-        Dim population As LongInt = ValInt(fields(14))
-        For index As Integer = LBound(regions) To UBound(regions)
-            If latitude >= regions(index).southEdge Then
-                regions(index).population += population
-                Exit For
-            End If
-        Next index
-    Loop
-    ' Report.
-    For index As Integer = LBound(regions) To UBound(regions)
-        Print regions(index).name, regions(index).population
-    Next index
-End Sub
-
 Sub Split( _
     result() As String, _
     ByRef text As Const String, _
@@ -51,7 +17,38 @@ Sub Split( _
     result(count) = Mid(text, start)
 End Sub
 
+Type Region
+    name as String
+    population as LongInt
+    southEdge as Double
+End Type
+
+Sub Tally(fileNum as Long, regions() As Region)
+    Dim text As String
+    Do Until Eof(fileNum)
+        Line Input #fileNum, text
+        Dim fields() As String
+        Split(fields(), text, !"\t")
+        Var latitude = Val(fields(4))
+        Dim population As LongInt = ValInt(fields(14))
+        For index As Integer = LBound(regions) To UBound(regions)
+            If latitude >= regions(index).southEdge Then
+                regions(index).population += population
+                Exit For
+            End If
+        Next index
+    Loop
+End Sub
+
 Sub Main
+    ' Define regions.
+    Dim regions(0 To 1) as Region
+    regions(0).name = "North"
+    regions(0).population = 0
+    regions(0).southEdge = 0
+    regions(1).name = "South"
+    regions(1).population = 0
+    regions(1).southEdge = -90
     ' Open file.
     Var fileName = Command(1)
     Var fileNum = FreeFile()
@@ -62,17 +59,13 @@ Sub Main
     If Err > 0 Then
         Error 1
     End If
-    ' Define regions.
-    Dim regions(0 To 1) as Region
-    regions(0).name = "North"
-    regions(0).population = 0
-    regions(0).southEdge = 0
-    regions(1).name = "South"
-    regions(1).population = 0
-    regions(1).southEdge = -90
     ' Calculate and close.
     Tally(fileNum, regions())
     Close #fileNum
+    ' Report.
+    For index As Integer = LBound(regions) To UBound(regions)
+        Print regions(index).name; regions(index).population
+    Next index
 End Sub
 
 Main
