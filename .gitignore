@@ -1,5 +1,7 @@
 /end
+/env.sh
 target/
 cities15000.txt
 cities15000.zip
 countryInfo.txt
+*.o
