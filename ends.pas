@@ -1,7 +1,7 @@
 program Ends;
 {$mode objfpc}
 
-uses Sysutils;
+uses StrUtils, SysUtils;
 
 type
   TRegion = record
@@ -20,11 +20,17 @@ var
 
 procedure Tally(var inputFile: TextFile; var regions: array of TRegion);
 var
+  fields: array of AnsiString;
+  latitude: Double;
   line: AnsiString;
+  population: Int64;
 begin
   WriteLn('Hi!');
   while not Eof(inputFile) do begin
     ReadLn(inputFile, line);
+    fields := SplitString(line, #9);
+    latitude := StrToFloat(fields[4]);
+    population := StrToInt(fields[14]);
   end;
 end;
 
