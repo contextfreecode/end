@@ -8,7 +8,7 @@ defmodule End do
       fields = String.split(line, "\t")
       latitude = Enum.at(fields, 4) |> Float.parse()
       population = Enum.at(fields, 14) |> Integer.parse()
-      region = regions |> Enum.find(fn region ->
+      region = regions |> Enum.find(fn(region) ->
         latitude >= region.south_edge
       end)
     end)
