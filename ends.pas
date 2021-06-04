@@ -25,7 +25,6 @@ var
   line: AnsiString;
   population: Int64;
 begin
-  WriteLn('Hi!');
   while not Eof(inputFile) do begin
     ReadLn(inputFile, line);
     fields := SplitString(line, #9);
