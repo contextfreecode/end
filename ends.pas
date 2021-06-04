@@ -1,11 +1,11 @@
-program BookEnd;
+program Ends;
 {$mode objfpc}
 
 uses Sysutils;
 
 type
   TRegion = record
-    Name: UTF8String;
+    Name: AnsiString;
     Population: Int64;
     SouthEdge: Double;
   end;
@@ -19,8 +19,13 @@ var
   );
 
 procedure Tally(var inputFile: TextFile; var regions: array of TRegion);
+var
+  line: AnsiString;
 begin
   WriteLn('Hi!');
+  while not Eof(inputFile) do begin
+    ReadLn(inputFile, line);
+  end;
 end;
 
 begin
