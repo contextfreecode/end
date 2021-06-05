@@ -29,7 +29,7 @@ begin
     ReadLn(inputFile, line);
     fields := SplitString(line, #9);
     latitude := StrToFloat(fields[4]);
-    population := StrToInt(fields[14]);
+    population := StrToInt64(fields[14]);
   end;
 end;
 
