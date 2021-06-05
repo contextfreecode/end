@@ -28,7 +28,7 @@ var
 begin
   while not Eof(inputFile) do begin
     ReadLn(inputFile, line);
-    fields := SplitString(line, #9);
+    fields := line.Split(#9);
     latitude := StrToFloat(fields[4]);
     population := StrToInt64(fields[14]);
     for regionIndex := 0 to Length(regions) do begin
