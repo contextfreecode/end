@@ -24,12 +24,19 @@ var
   latitude: Double;
   line: AnsiString;
   population: Int64;
+  regionIndex: Integer;
 begin
   while not Eof(inputFile) do begin
     ReadLn(inputFile, line);
     fields := SplitString(line, #9);
     latitude := StrToFloat(fields[4]);
     population := StrToInt64(fields[14]);
+    for regionIndex := 0 to Length(regions) do begin
+      if latitude >= regions[regionIndex].SouthEdge then begin
+        regions[regionIndex].Population += population;
+        break;
+      end;
+    end;
   end;
 end;
 
