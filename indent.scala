@@ -16,13 +16,9 @@ def tally(file: scala.io.Source, regions: Iterable[Region]): Unit =
         if latitude >= region.southEdge then
           region.population += population
           break
-        end if
-      end for
     }
-  end for
-end tally
 
-@main def hello(name: String): Unit =
+@main def run(name: String): Unit =
   val regions = List(
     Region(name = "North", population = 0, southEdge = 0),
     Region(name = "South", population = 0, southEdge = -90),
@@ -32,5 +28,3 @@ end tally
   }
   for (region <- regions)
     println(s"${region.name}: ${region.population}")
-  end for
-end hello

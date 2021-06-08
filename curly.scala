@@ -6,19 +6,23 @@ class Region(
   val southEdge: Double,
 )
 
-def tally(file: scala.io.Source, regions: Iterable[Region]): Unit =
-  for (line <- file.getLines)
+def tally(file: scala.io.Source, regions: Iterable[Region]): Unit = {
+  for (line <- file.getLines) {
     val fields = line.split('\t')
     val latitude = fields(4).toDouble
     val population = fields(14).toLong
     breakable {
-      for (region <- regions)
-        if latitude >= region.southEdge then
+      for (region <- regions) {
+        if (latitude >= region.southEdge) {
           region.population += population
           break
+        }
+      }
     }
+  }
+}
 
-@main def hello(name: String): Unit =
+@main def run(name: String): Unit = {
   val regions = List(
     Region(name = "North", population = 0, southEdge = 0),
     Region(name = "South", population = 0, southEdge = -90),
@@ -26,5 +30,7 @@ def tally(file: scala.io.Source, regions: Iterable[Region]): Unit =
   scala.util.Using(scala.io.Source.fromFile(name)) { file =>
     tally(file, regions)
   }
-  for (region <- regions)
+  for (region <- regions) {
     println(s"${region.name}: ${region.population}")
+  }
+}
