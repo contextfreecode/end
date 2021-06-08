@@ -3,26 +3,22 @@ defmodule End do
     defstruct name: "", population: 0, south_edge: 0
   end
 
-  defp tally(file, regions) do
-    file
-    |> IO.stream(:line)
-    |> Enum.reduce(regions, fn line, regions ->
+  def tally(lines, regions) do
+    Enum.reduce(lines, regions, fn line, regions ->
       fields = String.split(line, "\t")
-      latitude = Enum.at(fields, 4) |> Float.parse() |> elem(0)
-      population = Enum.at(fields, 14) |> Integer.parse() |> elem(0)
+      {latitude, _} = Enum.at(fields, 4) |> Float.parse()
+      {population, _} = Enum.at(fields, 14) |> Integer.parse()
+
+      {regions, _} =
+        Enum.map_reduce(regions, false, fn
+          region, false when latitude >= region.south_edge ->
+            {%{region | population: region.population + population}, true}
+
+          region, found? ->
+            {region, found?}
+        end)
 
       regions
-      |> Enum.reduce({false, []}, fn region, {found, regions} ->
-        {found, region} =
-          if not found and latitude >= region.south_edge do
-            {true, %{region | population: region.population + population}}
-          else
-            {found, region}
-          end
-
-        {found, regions ++ [region]}
-      end)
-      |> elem(1)
     end)
   end
 
@@ -32,15 +28,11 @@ defmodule End do
       %Region{name: "South", south_edge: -90}
     ]
 
-    {:ok, regions} =
-      File.open(Enum.at(System.argv(), 0), [:read], fn file ->
-        tally(file, regions)
-      end)
+    [filename] = System.argv()
 
-    regions
-    |> Enum.each(fn region ->
-      IO.puts("#{region.name}: #{region.population}")
-    end)
+    File.stream!(filename)
+    |> tally(regions)
+    |> Enum.each(&IO.puts("#{&1.name}: #{&1.population}"))
   end
 end
 
